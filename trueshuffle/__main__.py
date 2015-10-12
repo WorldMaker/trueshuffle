@@ -94,7 +94,12 @@ def main():
         libfile = random.choice(library)
         library.remove(libfile)
 
-        size = os.path.getsize(libfile)
+        size = 0
+        try: # failing on some unicode names
+            size = os.path.getsize(libfile)
+        except:
+            logging.warn('Could not get file size: %s' % libfile)
+
         if size > fspace:
             logging.debug('%s: %d > %d' % (libfile, size, fspace))
             break
