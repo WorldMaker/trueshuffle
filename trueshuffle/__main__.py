@@ -71,7 +71,7 @@ def main():
             count = int(bn)
         except ValueError:
             pass
-        highest = max(highest, count)
+        highest = max(highest, count or 0)
         if count and count < args.heard:
             path = os.path.join(args.destination, filename)
             logging.debug(path)
