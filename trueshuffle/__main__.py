@@ -129,6 +129,8 @@ def main():
     manifestf.write(yaml.dump(manifest))
     manifestf.close()
 
+    logging.info('Remaining files to shuffle: %d' % len(library))
+
 if __name__ == "__main__":
     main()
 
