@@ -3,7 +3,7 @@
 # Auto-fill a disk with a revolving, intelligent shuffle
 
 MANIFEST_NAME = 'trueshuffle.yaml'
-FLOOR_FSPACE = 1 * 1000 * 1000 # Leave a meg left (manifest, et al)
+FLOOR_FSPACE = 100 * 1000 * 1000 # Leave a meg left (manifest, et al)
 
 def main():
     import argparse
@@ -130,6 +130,19 @@ def main():
     manifestf.close()
 
     logging.info('Remaining files to shuffle: %d' % len(library))
+
+    def diskitems():
+        for k, v in manifest.items():
+            bn = int(os.path.splitext(v)[0])
+            if bn >= args.heard:
+                yield bn, k
+
+    import csv
+
+    with open(os.path.join(args.library, 'trueshuffle.csv'), 'w', newline='', encoding='utf-16le') as shuffledf:
+        writer = csv.writer(shuffledf)
+        writer.writerow(['number', 'original path'])
+        writer.writerows((bn, k) for bn, k in sorted(diskitems()))
 
 if __name__ == "__main__":
     main()
