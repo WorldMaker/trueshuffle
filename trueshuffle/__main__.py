@@ -39,7 +39,7 @@ def main():
     if not args.reshuffle and os.path.exists(manifestpath):
         logging.info('Loading shuffle manifest')
         manifestf = open(manifestpath, 'r')
-        manifest = yaml.load(manifestf)
+        manifest = yaml.safe_load(manifestf)
         manifestf.close()
 
     if not manifest and args.heard:
@@ -47,7 +47,7 @@ def main():
         return
 
     if manifest and not args.heard:
-        logging.warn('Heard count not provided for rotation, may not have space')
+        logging.warning('Heard count not provided for rotation, may not have space')
     
     logging.info('Enumerating library (this may take a while)')
     library = []
@@ -98,7 +98,7 @@ def main():
         try: # failing on some unicode names
             size = os.path.getsize(libfile)
         except:
-            logging.warn('Could not get file size: %s' % libfile)
+            logging.warning('Could not get file size: %s' % libfile)
 
         if size > fspace:
             logging.debug('%s: %d > %d' % (libfile, size, fspace))
@@ -112,12 +112,12 @@ def main():
         try:
             shutil.copy(libfile, os.path.join(args.destination, newbn))
         except:
-            logging.warn('Could not copy: %s' % libfile)
+            logging.warning('Could not copy: %s' % libfile)
 
         if highest % 20 == 0:
             logging.info('Updating manifest')
             manifestf = open(manifestpath, 'w')
-            manifestf.write(yaml.dump(manifest))
+            manifestf.write(yaml.safe_dump(manifest))
             manifestf.close()
 
         fspace = psutil.disk_usage(args.destination).free
@@ -126,7 +126,7 @@ def main():
 
     logging.info('Updating manifest')
     manifestf = open(manifestpath, 'w')
-    manifestf.write(yaml.dump(manifest))
+    manifestf.write(yaml.safe_dump(manifest))
     manifestf.close()
 
     logging.info('Remaining files to shuffle: %d' % len(library))
