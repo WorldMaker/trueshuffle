@@ -39,7 +39,7 @@ def main():
     if not args.reshuffle and os.path.exists(manifestpath):
         logging.info('Loading shuffle manifest')
         manifestf = open(manifestpath, 'r')
-        manifest = yaml.load(manifestf)
+        manifest = yaml.safe_load(manifestf)
         manifestf.close()
 
     if not manifest and args.heard:
@@ -117,7 +117,7 @@ def main():
         if highest % 20 == 0:
             logging.info('Updating manifest')
             manifestf = open(manifestpath, 'w')
-            manifestf.write(yaml.dump(manifest))
+            manifestf.write(yaml.safe_dump(manifest))
             manifestf.close()
 
         fspace = psutil.disk_usage(args.destination).free
@@ -126,7 +126,7 @@ def main():
 
     logging.info('Updating manifest')
     manifestf = open(manifestpath, 'w')
-    manifestf.write(yaml.dump(manifest))
+    manifestf.write(yaml.safe_dump(manifest))
     manifestf.close()
 
     logging.info('Remaining files to shuffle: %d' % len(library))
